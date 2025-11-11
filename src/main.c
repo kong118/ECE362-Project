@@ -10,6 +10,8 @@ int main() {
     stdio_init_all();
     ultrasound_init();
     init_pwm(37, 999);
+    init_buzz_frequency_pwm();
+    
     while (1) {
         spin_5_degrees();
         sleep_ms(30);
