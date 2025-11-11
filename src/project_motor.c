@@ -1,12 +1,12 @@
-// #include <stdio.h>
-// #include <math.h>
-// #include <stdlib.h>
-// #include "pico/stdlib.h"
-// #include "hardware/pwm.h"
-// #define NUM_DEG = 5;
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+#include "pico/stdlib.h"
+#include "hardware/pwm.h"
+#define NUM_DEG = 5;
 
-// float angle = 0;
-// int dir = 1;
+ float angle = 0;
+ int dir = 1;
 
 void init_pwm(int pin, int period){
     gpio_set_func(pin, GPIO_FUNC_PWM);
@@ -30,10 +30,10 @@ void spin_5_degrees(int pin){
     pwm_set_gpio_level(pin, pulse_length)
 }
 
-int main(){
-    init_pwm(37, 999);
-    for(;;){
-        sleep_ms(30);
-        spin_5_degrees(37);
-    }
-}
+// int main(){
+//     init_pwm(37, 999);
+//     for(;;){
+//         sleep_ms(30);
+//         spin_5_degrees(37);
+//     }
+// }
