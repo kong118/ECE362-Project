@@ -41,3 +41,4 @@ void volume()
     pwm_clear_irq(slice_num);
     pwm_set_chan_level(slice_num,channel_num,closeness);
 }
+
