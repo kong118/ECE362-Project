@@ -6,18 +6,17 @@
 #include "ultrasound.h"
 #include "TFT.h"
 #include "lcd.h"
-//#include "project_motor.h"
+#include "project_motor.h"
 
 int main() {
     stdio_init_all();
     ultrasound_init();
-    //init_pwm(37, 999);
-    //init_buzz_frequency_pwm();
+    init_pwm(37, 999);
+    init_buzz_frequency_pwm();
     LCD_Setup();
     draw_init();
-    
     while (1) {
-        //spin_5_degrees();
+        spin_5_degrees(37);
         sleep_ms(30);
         float* distance = ultrasound_measure_distance();
         if (distance != NULL) {
