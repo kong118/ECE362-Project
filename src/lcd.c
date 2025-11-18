@@ -5,6 +5,7 @@
 
 #include "pico/stdlib.h"
 #include "hardware/spi.h"
+#include "hardware/gpio.h"
 #include <stdio.h>
 #include <stdint.h>
 #include "lcd.h"
@@ -285,6 +286,37 @@ void LCD_Init(void (*reset)(int), void (*select)(int), void (*reg_select)(int))
 }
 
 void LCD_Setup() {
+    // Initialize SPI1 at 62.5MHz (max stable for ILI9341)
+    spi_init(SPI, 62500000);
+    
+    // Set SPI format: 8 bits, CPOL=0, CPHA=0, MSB first
+    spi_set_format(SPI, 8, SPI_CPOL_0, SPI_CPHA_0, SPI_MSB_FIRST);
+    
+    // Configure GPIO pins for SPI1
+    // MISO (GP8 - not used for LCD but required for SPI init)
+    //gpio_set_function(8, GPIO_FUNC_SPI);
+    // SCK (GP10)
+    gpio_set_function(30, GPIO_FUNC_SPI);
+    // MOSI (GP11)
+    gpio_set_function(31, GPIO_FUNC_SPI);
+    
+    // Initialize CS, DC, and RESET as GPIO outputs
+    gpio_init(CS_NUM);
+    gpio_set_dir(CS_NUM, GPIO_OUT);
+    gpio_put(CS_NUM, 1); // CS high (inactive)
+    
+    gpio_init(DC_NUM);
+    gpio_set_dir(DC_NUM, GPIO_OUT);
+    gpio_put(DC_NUM, 0); // DC low initially
+    
+    gpio_init(RESET_NUM);
+    gpio_set_dir(RESET_NUM, GPIO_OUT);
+    gpio_put(RESET_NUM, 1); // RESET high (inactive)
+    
+    // Small delay for hardware to stabilize
+    sleep_ms(10);
+    
+    // Initialize LCD controller
     tft_select(0);
     tft_reset(0);
     tft_reg_select(0);

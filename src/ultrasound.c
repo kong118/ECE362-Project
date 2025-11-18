@@ -50,7 +50,7 @@ float* ultrasound_measure_distance() {
     uint64_t pulse_duration = absolute_time_diff_us(echo_start, echo_end);
     distance = (pulse_duration * SOUND_SPEED_CM_PER_US) / 2.0;
 
-    if (distance < 2.0 || distance > 60.0) {
+    if (distance < 2.0 || distance > 200) {
         return NULL;
     }
     
