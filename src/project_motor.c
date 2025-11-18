@@ -27,7 +27,7 @@ void spin_5_degrees(int pin){
         angle = 0;
     }
     float pulse_length = 50 + (angle/180.0)*(50);//usual hobbby servos have a max of 2ms puls ead a min of 1ms pulse
-    pwm_set_gpio_level(pin, pulse_length)
+    pwm_set_gpio_level(pin, pulse_length);
 }
 
 // int main(){
