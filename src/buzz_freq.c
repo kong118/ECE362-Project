@@ -116,3 +116,41 @@ void init_wavetable(void) {
     for(int i=0; i < N; i++)
         wavetable[i] = (16383 * sin(2 * 3.14159265 * i / N)) + 16384;
 }
+
+/**
+ * @brief Set buzzer frequency based on distance
+ * @param distance: Distance in cm (closer = higher frequency)
+ */
+void set_buzz_frequency(float distance) {
+    // Map distance to frequency: closer = higher frequency
+    // Distance range: 0-200cm
+    // Frequency range: 2000Hz (close) to 200Hz (far)
+    int frequency;
+    
+    if (distance <= 0) {
+        frequency = 2000;  // Very close
+    } else if (distance >= 200) {
+        frequency = 200;   // Very far
+    } else {
+        // Linear mapping: closer = higher frequency
+        frequency = 2000 - (int)((distance / 200.0) * 1800);
+    }
+    
+    // Set the wrap value to control frequency
+    // Lower wrap value = higher frequency
+    closeness = 1000000 / frequency;
+    
+    uint slice_num = pwm_gpio_to_slice_num(gpio);
+    uint channel_num = pwm_gpio_to_channel(gpio);
+    pwm_set_wrap(slice_num, closeness);
+    pwm_set_chan_level(slice_num, channel_num, closeness / 2);  // 50% duty cycle for beep
+}
+
+/**
+ * @brief Stop buzzer sound
+ */
+void stop_buzz() {
+    uint slice_num = pwm_gpio_to_slice_num(gpio);
+    uint channel_num = pwm_gpio_to_channel(gpio);
+    pwm_set_chan_level(slice_num, channel_num, 0);
+}
