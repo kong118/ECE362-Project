@@ -1,19 +1,16 @@
 #ifndef __MOTOR_H
 #define __MOTOR_H
 
-void init_pwm(int pin, int period);
+void servo_pwm_init(int pin, int period);
 
-/**
- * @brief Rotate motor 10 degrees clockwise and wait 0.5s
- * @param pin: PWM pin for servo control
- * @return Current angle in degrees (0-180)
- */
-float rotate_10_degrees(int pin);
+void servo_rotate_cw(int pin);
 
-/**
- * @brief Get current motor angle without moving
- * @return Current angle in degrees (0-180)
- */
-float get_current_angle(void);
+void servo_rotate_ccw(int pin);
+
+void servo_stop(int pin);
+
+void servo_sweep(int pin);
+
 
 #endif
+

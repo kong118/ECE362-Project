@@ -29,7 +29,7 @@ float* ultrasound_measure_distance() {
     
     // start of echo
     absolute_time_t start_time = get_absolute_time();
-    absolute_time_t timeout_time = make_timeout_time_us(TIMEOUT_US);
+    //absolute_time_t timeout_time = make_timeout_time_us(TIMEOUT_US);
     
     while (gpio_get(ECHO_PIN) == 0) {
         if (absolute_time_diff_us(start_time, get_absolute_time()) > TIMEOUT_US) {

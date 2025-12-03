@@ -12,36 +12,58 @@
 int main() {
     stdio_init_all();
     ultrasound_init();
-    init_pwm(37, 999);
-    init_buzz_frequency_pwm();
+    servo_pwm_init(27, 999);
+    init_buzzer();
     LCD_Setup();
     draw_init();
     
+    float angle = 0;
+    const float sweep_time_ms = 2000;
+    const float max_angle = 180;
+    const int samples = 18;
+    const float angle_step = max_angle / samples;
+    const float time_per_step = sweep_time_ms / samples;
+    
     while (1) {
-        // Rotate 10 degrees clockwise (includes 0.5s delay)
-        float angle = rotate_10_degrees(37);
+        servo_rotate_cw(27);
         
-        // Measure distance
-        float* distance = ultrasound_measure_distance();
-        if (distance != NULL) {
-            printf("Angle: %.1f deg, Distance: %.2f cm\n", angle, *distance);
-            draw_location(angle, *distance);
+        for(int i = 0; i <= samples; i++){
+            angle = i * angle_step;
             
-            // Beep buzzer with frequency based on distance
-            // Closer object = higher frequency
-            set_buzz_frequency(*distance);
-            sleep_ms(100);  // Short beep
-            stop_buzz();
-        } else {
-            printf("Angle: %.1f deg, No object detected\n", angle);
-            stop_buzz();  // No beep if no object
+            float* distance = ultrasound_measure_distance();
+            if (distance != NULL) {
+                draw_location(angle, *distance);
+                set_buzzer_frequency(*distance);
+            } else {
+                stop_buzzer();
+            }
+            
+            sleep_ms(time_per_step);
         }
         
-        // Reset radar display after full sweep (when angle wraps to 0)
-        if (angle == 0) {
-            sleep_ms(1000);
-            draw_init();
+        servo_stop(27);
+        sleep_ms(300);
+        
+        servo_rotate_ccw(27);
+        
+        for(int i = samples; i >= 0; i--){
+            angle = i * angle_step;
+            
+            float* distance = ultrasound_measure_distance();
+            if (distance != NULL) {
+                draw_location(angle, *distance);
+                set_buzzer_frequency(*distance);
+            } else {
+                stop_buzzer();
+            }
+            
+            sleep_ms(time_per_step);
         }
+        
+        servo_stop(27);
+        sleep_ms(300);
+        
+        draw_init();
     }
     
     return 0;
